@@ -55,35 +55,132 @@ class BinarySearchTree {
       return false;
   }
 
-  find(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  find(data) {
+    let currentNode = this._root;
+    while(currentNode){
+      if(currentNode.data === data){
+        return currentNode;
+      } else if (data < currentNode.data){
+        currentNode = currentNode.left;
+      } else {
+        currentNode = currentNode.right;
+      }
+    }
+    return null;
   }
 
-  remove(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  remove(data) {
+  let currentNode = this._root;
+  let parent = null;
+  let isLeftChild = true;
+
+  while (currentNode && currentNode.data !== data) {
+    parent = currentNode;
+    if (data < currentNode.data) {
+      currentNode = currentNode.left;
+      isLeftChild = true;
+    } else {
+      currentNode = currentNode.right;
+      isLeftChild = false;
+    }
   }
 
+  if (!currentNode) {
+    return;
+  }
+
+  if (!currentNode.left && !currentNode.right) {
+    if (currentNode === this._root) {
+      this._root = null;
+    } else if (isLeftChild) {
+      parent.left = null;
+    } else {
+      parent.right = null;
+    }
+  }
+
+
+  else if (!currentNode.right) {
+    if (currentNode === this._root) {
+      this._root = currentNode.left;
+    } else if (isLeftChild) {
+      parent.left = currentNode.left;
+    } else {
+      parent.right = currentNode.left;
+    }
+  }
+
+  else if (!currentNode.left) {
+    if (currentNode === this._root) {
+      this._root = currentNode.right;
+    } else if (isLeftChild) {
+      parent.left = currentNode.right;
+    } else {
+      parent.right = currentNode.right;
+    }
+  }
+
+
+  else {
+    let successor = this.getSuccessor(currentNode);
+    if (currentNode === this._root) {
+      this._root = successor;
+    } else if (isLeftChild) {
+      parent.left = successor;
+    } else {
+      parent.right = successor;
+    }
+    successor.left = currentNode.left;
+  }
+}
+
+getSuccessor(deleteNode) {
+  let successor = deleteNode;
+  let successorParent = deleteNode;
+  let current = deleteNode.right;
+
+  while (current) {
+    successorParent = successor;
+    successor = current;
+    current = current.left;
+  }
+
+  if (successor !== deleteNode.right) {
+    successorParent.left = successor.right;
+    successor.right = deleteNode.right;
+  }
+
+  return successor;
+}
   min() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    let currentNode = this._root;
+    let parrent = null;
+
+    while(currentNode){
+      if(currentNode.left === null){
+        return parrent.data;
+      } else {
+        currentNode = currentNode.left;
+      }
+      parrent = currentNode;
+    }
   }
 
   max() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    let currentNode = this._root;
+    let parrent = null;
+
+    while(currentNode){
+      if(currentNode.right === null){
+        return parrent.data;
+      } else {
+        currentNode = currentNode.right;
+      }
+      parrent = currentNode;
+    }
   }
 }
-let bim = new BinarySearchTree()
-bim.add(8);
-bim.add(18);
-bim.add(7);
-bim.add(2);
-bim.add(9);
-bim.add(24);
-bim.add(2);
-console.log(bim);
+
 module.exports = {
   BinarySearchTree
 };
